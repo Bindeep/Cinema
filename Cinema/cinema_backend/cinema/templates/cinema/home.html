@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+	<h1 class="my-4 text-center text-lg-left">Now Showing Moviessss</h1>
+	<br>
+
+	<div class="row">
+
+		{% for now_showing_movie in now_showing_movies %}
+
+
+
+		<div class="col-lg-4 col-md-6 col-xs-12">
+			<a href="{% url 'movie:movie-detail' now_showing_movie.slug %}" class="d-block mb-4 h-100">
+				<img class="img-fluid img-rounded" src="{{ now_showing_movie.poster.url }}" alt="" width="300" height="345">
+				
+			</a>
+			<h4 class="text-center"> {{ now_showing_movie }}</h4>
+		</div>
+
+
+		{% endfor %}
+	</div>
+		<h1 class="my-4 text-center text-lg-left">Upcoming Movies</h1>
+	<br>
+
+	<div class="row">
+
+		{% for Movie in Movies %}
+
+
+
+		<div class="col-lg-4 col-md-6 col-xs-12">
+			<a href="{% url 'movie:movie-detail' Movie.slug %}" class="d-block mb-4 h-100">
+				<img class="img-fluid img-thumbnail" src="{{ Movie.poster.url }}" alt="">
+				
+			</a>
+			<h4 class="text-center"> {{ Movie }}</h4>
+		</div>
+
+
+		{% endfor %}
+	</div>
+
+</div>
+
+{% endblock%}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+User Login
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+	<form method="Post">
+		{% csrf_token %}
+
+		{{ form.as_p }} <br>
+		<button type="submit" class="btn btn-info btn-lg">Login</button>
+		
+	</form> 
+</div>
+
+
+{% endblock%}

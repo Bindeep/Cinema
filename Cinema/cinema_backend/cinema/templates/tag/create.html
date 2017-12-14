@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	Tags
+{% endblock %}
+
+{% block body %}
+
+
+
+<div class="container">
+
+		
+	{% if Topic %}
+
+			<strong>{{ Topic }}</strong> <br>
+
+		
+
+			<form method="Post">
+				{% csrf_token %}
+				<br>
+				
+			
+				{{ form.as_p }}
+
+				<button type="submit" class="btn btn-success">{{ Create }}{{ Update }}</button>
+
+
+			</form>
+
+
+	{% endif %}
+	
+		
+		
+			<h1 class="text-center"> {{ List }} </h1>
+
+
+			<br>
+			<div class="container">
+				<div class="row">
+				
+					
+				{% for Tag in Tags %}
+				
+					<div class="col-sm-4">
+							<h3><span class="label label-default">{{ Tag }}</span></h3>
+						{% for MovieName in Tag.movie.all %}
+							<h4><span class="label label-info">{{ MovieName }}</span></h4>
+						{% endfor %}
+						<a href="{% url 'movie:tag_update' Tag.pk%}"><button type="submit" class="btn btn-success btn-sm">Update</button></a>
+						<form method="Post" action="{% url 'movie:tag_delete' Tag.pk%}">{% csrf_token %}
+							<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+						
+						</form>
+
+					</div>
+				{% endfor %}
+				</div>
+			</div>
+
+
+</div>
+{% endblock %}

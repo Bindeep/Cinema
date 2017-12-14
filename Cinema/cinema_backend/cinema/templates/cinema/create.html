@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Create {{ Movie }} {{ Genre }}
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+	<h1>{{ Create_Movie }} {{ Update_Movie }}</h1>
+
+	<form method="Post" enctype="multipart/form-data">
+		{% csrf_token %}
+
+		{{ form.as_p }} <br>
+		<button type="submit" class="btn btn-info btn-lg">{{ Create }} {{ Update }}</button>
+		
+	</form> 
+</div>
+
+
+{% endblock%}

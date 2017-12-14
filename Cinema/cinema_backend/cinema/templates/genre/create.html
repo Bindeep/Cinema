@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	Create Genre
+{% endblock %}
+
+{% block body %}
+
+	<div class="container"> 
+
+		{% if Create %}
+
+		
+
+			<form method="Post">
+				{% csrf_token %}
+				
+			
+				{{ form.as_p }}
+
+				<button type="submit" class="btn btn-success">{{ Create }}</button>
+
+
+			</form>
+
+
+
+		{% else %}
+		
+			<h1 class="text-center"> {{ List }} </h1>
+
+			<br>
+
+			{% for Genre in Genres %}
+
+
+
+				<div class="container-fluid">
+					<form method="Post" action="{% url 'movie:genre_delete' Genre.pk %}">{% csrf_token %}
+						<div class="row">
+							<span class="col-md-8 text-center">
+								<h4><span class="label label-default">{{ Genre }}</span></h4>
+							</span>
+							<span class="col-md-0 text-center">
+								<button class="btn btn-sm btn-danger" type="submit">Delete</button> <br>
+							</span>
+						</div>
+					</form>
+				</div>
+				
+			{% endfor %}
+
+		{% endif %}
+
+	</div>
+
+{% endblock %}
