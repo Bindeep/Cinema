@@ -32,7 +32,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'material',
-    
     'material.admin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cinema',
-    'rest_framework'
+    'rest_framework',
+    'debug_toolbar'
 
 ]
 
@@ -51,10 +51,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
- 
+
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -150,3 +151,4 @@ LOGIN_REDIRECT_URL = '/movie/'
 AUTH_PROFILE_MODULE = 'cinema.UserProfile'
 
 
+INTERNAL_IPS = '127.0.0.1'

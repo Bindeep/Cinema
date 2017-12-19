@@ -7,8 +7,12 @@ Home
 {% block body %}
 
 <div class="container">
+	
+	<div class="page-header">
+		<h1 class="my-4 text-center text-lg-left text-primary">Now Showing Movies</h1>
 
-	<h1 class="my-4 text-center text-lg-left">Now Showing Moviessss</h1>
+	</div>
+	
 	<br>
 
 	<div class="row">
@@ -17,32 +21,38 @@ Home
 
 
 
-		<div class="col-lg-4 col-md-6 col-xs-12">
+		<div class="col-lg-4">
 			<a href="{% url 'movie:movie-detail' now_showing_movie.slug %}" class="d-block mb-4 h-100">
-				<img class="img-fluid img-rounded" src="{{ now_showing_movie.poster.url }}" alt="" width="300" height="345">
+				<img class="img-rounded img-responsive" src="{{ now_showing_movie.poster.url }}" alt="" width="300" height="350">
 				
 			</a>
-			<h4 class="text-center"> {{ now_showing_movie }}</h4>
+			<strong><h2 class="text-center"> {{ now_showing_movie }}</h2></strong>
 		</div>
 
 
 		{% endfor %}
-	</div>
-		<h1 class="my-4 text-center text-lg-left">Upcoming Movies</h1>
+</div>
+<div class="container">
 	<br>
+	<br>
+	<div class="page-header">
+		
+		<h1 class="my-4 text-center text-lg-left text-primary">Upcoming Movies</h1>
 
+	</div>
 	<div class="row">
 
 		{% for Movie in Movies %}
 
 
 
-		<div class="col-lg-4 col-md-6 col-xs-12">
+		<div class="col-lg-4">
 			<a href="{% url 'movie:movie-detail' Movie.slug %}" class="d-block mb-4 h-100">
-				<img class="img-fluid img-thumbnail" src="{{ Movie.poster.url }}" alt="">
+				<img class="img-responsive img-rounded" src="{{ Movie.poster.url }}" alt=""width="300" height="350">
 				
 			</a>
-			<h4 class="text-center"> {{ Movie }}</h4>
+			<strong><h2 class="text-center"> {{ Movie }}</h2></strong>
+
 		</div>
 
 
@@ -50,5 +60,15 @@ Home
 	</div>
 
 </div>
+
+<style type="text/css">
+	
+
+img {
+    width: 500px; /* You can set the dimensions to whatever you want */
+    height: 300px;
+    object-fit: cover;
+}
+</style>
 
 {% endblock%}
