@@ -6,14 +6,24 @@ Create {{ Movie }} {{ Genre }}
 
 {% block body %}
 
+
 <div class="container">
 	<h1>{{ Create_Movie }} {{ Update_Movie }}</h1>
 
-	<form method="Post" enctype="multipart/form-data">
+	<form class="form-group" method="Post" enctype="multipart/form-data">
 		{% csrf_token %}
 
 		{{ form.as_p }} <br>
-		<button type="submit" class="btn btn-info btn-lg">{{ Create }} {{ Update }}</button>
+
+
+		  <div class="pull-center">
+  	
+  		<span class="col-md-1"></span>
+    	<span class="col-md-4">
+    	<button type="submit" class="btn btn-info btn-lg btn-block">{{ Create }} {{ Update }}</button>
+    </span>
+  </div>
+		
 		
 	</form> 
 </div>

@@ -8,8 +8,10 @@
 <div class="container form-group">
 	
 	<form class="from-group">
-		<span class="col-sm-1"></span>
-		<object style="height: 420px; width: 1000px" class="pull-center">{{ Movie.youtube_link|safe }}</object>
+	
+			<span class="col-sm-1"></span>
+			<div class="container" height="400" width="400">{{ Movie.youtube_link|safe }}</div>
+
 		<br><br>
 		<br><br>
 
@@ -144,6 +146,7 @@
 	<br>
 	<br>
 	<br>
+	<br>
 	<div>
 
 			<span class="col-sm-5"> </span>
@@ -157,6 +160,7 @@
 								<input type="hidden" value="{{ Movie.slug }}" id="slug">
 								<input type="hidden" value="{{ request.user.username }}" id="user">
 								<input type="hidden" value="{{ Movie.name }}" id="movieName">
+								<input type="hidden" value="{{ rating }}" id="userRating">
 								<fieldset class="rating">
 									<input type="radio" id="star5" name="rating" value="5" /><label class = "full" for="star5" title="Awesome - 5 stars"></label>
 
@@ -273,14 +277,30 @@ h1 { font-size: 1.5em; margin: 10px; }
 
 
 
-<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 <script type="text/javascript">
-/*	$(document).ready(function(){
-		$("input".click(function(){
-			var val = $(this).val();
-		}))
-	})*/
+
 	$("#after_click").hide();
+
+
+	$(document).on("ready", function(){
+
+		if($("#userRating").val() !== ""){
+			rating = $("#userRating").val();
+			rate = Number(rating);
+			for(i=1; i<=rate; i++){
+				var star = "#star";
+				var star_rate = String(i);
+				var star_id = star.concat(star_rate);					
+				$(star_id).prop("checked", true)
+			}
+			$(":radio").prop("disabled", true);
+			$("#before_click").hide();
+			$("#after_click").show();
+
+		}
+	})
+
+
 
 	$(document).one('click', ":radio", function(e){
 		e.preventDefault;
@@ -310,8 +330,9 @@ h1 { font-size: 1.5em; margin: 10px; }
 					var star_rate = String(i);
 					var star_id = star.concat(star_rate);					
 					$(star_id).prop("checked", true)
-					$(star_id).prop("disabled", true)
+					
 				}
+				$(":radio").prop("disabled", true)
 
 				/*$("#star1").prop("checked", true);*/
 

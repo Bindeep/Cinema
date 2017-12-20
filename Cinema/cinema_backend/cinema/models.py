@@ -12,6 +12,9 @@ class Genre(models.Model):
 
 
 class Movie(models.Model):
+    '''
+    
+    '''
     name = models.CharField(max_length=100, blank=False, null=False)
     genre = models.ForeignKey(Genre, related_name='genre', on_delete=models.DO_NOTHING)
     release_date = models.DateField(auto_now=False, auto_now_add=False)
@@ -38,7 +41,8 @@ class Movie(models.Model):
         user_ratings_list = []
         user_ratings = ''
         for item in user_ratings_dict:
-            user_ratings +='<li>' + item['user__username'] + ' has give rating of ' + str(item['rating']) + '</li>'
+            user_ratings += '<li>' + item['user__username'] + ' has give rating of ' + \
+                str(item['rating']) + '</li>'
             user_ratings_list = user_ratings
         return user_ratings_list
 

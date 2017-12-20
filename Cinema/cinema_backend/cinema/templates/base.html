@@ -6,6 +6,8 @@
 		
 		{% block title %} Base {% endblock %}
 	</title>
+
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -33,7 +35,8 @@
   <div class="container-fluid ">
     <div class="navbar-header">
 
-      <a class="navbar-brand" href="{% url 'movie:movie-list' %}">Cinema Home</a>
+      <a class="navbar-brand" style="font-size:33px;color:#d3c2da;" href="{% url 'movie:movie-list' %}">m<i class="fa fa-smile-o" aria-hidden="true">vie</i>
+      </a>
     </div>
 
      <div class=" col-sm-6 col-md-6">
@@ -79,7 +82,7 @@
     </ul>
   </div>
 </nav> 
-
+</div>
 
 	
 <br>
@@ -92,5 +95,12 @@
 </html>
 
 <style type="text/css">
-  body {background-color: #ffe1ff;}
+  body {background: #43C6AC;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #F8FFAE, #43C6AC);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #F8FFAE, #43C6AC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+li{}
+
+  /*background-color: #ffe1ff;*/
 </style>

@@ -32,30 +32,36 @@ class MovieSearchView(View):
         return render(request, 'cinema/home.html', context)
 
 
-class MovieDetailView(DetailView):
-    model = Movie
-    template_name = 'cinema/detail.html'
-    context_object_name = 'Movie'
-    
-
-# class MovieDetailView(View):
+# class MovieDetailView(DetailView):
+#     model = Movie
 #     template_name = 'cinema/detail.html'
-
-#     def get(self, request, slug):
-#         movie_object = Movie.objects.get(slug=slug)
-#         user_object = User.objects.get(username=self.request.user.username)
-#         rated_movie = user_object.rateduser.all()
-#         movie_filter = rated_movie.filter(movie__slug=slug)
-#         if movie_filter is None:
-#             context = {
-
-#                 'Movie': movie_object
-#             }
-#             return render(request, self.template_name, context)
-#         else:
+#     context_object_name = 'Movie'
 
 
+class MovieDetailView(View):
+    template_name = 'cinema/detail.html'
 
+    def get(self, request, slug):
+        movie_object = Movie.objects.get(slug=slug)
+        user_object = User.objects.get(username=self.request.user.username)
+        rated_movie = user_object.rateduser.all()
+        movie_filter = rated_movie.filter(movie=movie_object).exists()
+        # get to return oject not queryset
+
+        if movie_filter:
+            rating = rated_movie.filter(movie=movie_object).get().rating
+            context = {
+                'Movie': movie_object,
+                'rating': rating
+            }
+            return render(request, self.template_name, context)
+        else:
+            context = {
+
+                'Movie': movie_object,
+            }
+
+            return render(request, self.template_name, context)
 
 
 class MovieCreateView(CreateView):
