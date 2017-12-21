@@ -5,37 +5,67 @@ from django.urls import reverse_lazy
 import datetime
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.db.models import Q
+from django.core.paginator import Paginator
 
 
-class MovieListView(ListView):
+# class MovieListView(ListView):
+#     today = datetime.date.today()
+#     ten_days_ago = today - datetime.timedelta(days=10)
+#     model = Movie
+#     template_name = 'cinema/home.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super(MovieListView, self).get_context_data(**kwargs)
+#         up_coming_movies = Movie.objects.filter(release_date__gt=self.today)
+#         now_showing = Movie.objects.filter(release_date__range=(self.ten_days_ago, self.today))
+#         context['up_coming_movies'] = up_coming_movies
+#         context['now_showing_movies'] = now_showing
+#         return context
+
+# class MovieListView(ListView):
+#     model = Movie
+#     template_name = 'cinema/home.html'
+#     paginate_by = 2
+#     context_object_name = 'Movies'
+
+class MovieListView(View):
     today = datetime.date.today()
     ten_days_ago = today - datetime.timedelta(days=10)
-    model = Movie
-    template_name = 'cinema/home.html'
-# context_object_name = 'Movies'
-
-    def get_context_data(self, **kwargs):
-        context = super(MovieListView, self).get_context_data(**kwargs)
-        movies = Movie.objects.filter(release_date__gt=self.today)
-        now_showing = Movie.objects.filter(release_date__range=(self.ten_days_ago, self.today))
-        context = {'Movies': movies, 'now_showing_movies': now_showing}
-        return context
-
-
-class MovieSearchView(View):
     template_name = 'cinema/home.html'
 
     def get(self, request):
+        up_coming_movies = Movie.objects.filter(release_date__gt=self.today)
+        now_showing = Movie.objects.filter(release_date__range=(self.ten_days_ago, self.today))
+        paginator = Paginator(up_coming_movies, 2)
+        page = request.GET.get('page')
+        up_coming_movies = paginator.get_page(page)
+        paginator = Paginator(now_showing, 2)
+        page = request.GET.get('page')
+        now_showing = paginator.get_page(page)
+        context = {
+
+            'up_coming_movies': up_coming_movies,
+            'now_showing_movies': now_showing
+        }
+        return render(request, self.template_name, context)
+
+
+class MovieSearchView(ListView):
+    template_name = 'cinema/home.html'
+    paginate_by = 2
+
+    def get(self, request):
         name = request.GET.get('name')
-        movies = Movie.objects.filter(name__icontains=name)
-        context = {'Movies': movies}
-        return render(request, 'cinema/home.html', context)
-
-
-# class MovieDetailView(DetailView):
-#     model = Movie
-#     template_name = 'cinema/detail.html'
-#     context_object_name = 'Movie'
+        page = request.GET.get('page')
+        movies = Movie.objects.all().filter(
+            Q(name__icontains=name) |
+            Q(genre__name__icontains=name) |
+            Q(tag__tag_name__icontains=name)
+        )
+        paginator = Paginator(movies, 2)
+        movies = paginator.get_page(page)
+        return render(request, self.template_name, {'search_movies': movies})
 
 
 class MovieDetailView(View):
@@ -44,7 +74,11 @@ class MovieDetailView(View):
     def get(self, request, slug):
         movie_object = Movie.objects.get(slug=slug)
         if request.user.is_anonymous:
-            return render(request, 'cinema/detail.html', {'Movie': movie_object})
+            return render(request, 'cinema/detail.html', {
+                'Movie': movie_object,
+                'error': 'You must be registered User to give rating !!!'
+
+            })
 
         else:
             user_object = User.objects.get(username=self.request.user.username)

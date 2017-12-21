@@ -13,7 +13,6 @@ class Genre(models.Model):
 
 class Movie(models.Model):
     '''
-    
     '''
     name = models.CharField(max_length=100, blank=False, null=False)
     genre = models.ForeignKey(Genre, related_name='genre', on_delete=models.DO_NOTHING)
@@ -102,7 +101,7 @@ class Movie(models.Model):
 
 
 class Tag(models.Model):
-    movie = models.ManyToManyField(Movie, related_name='movie')
+    movie = models.ManyToManyField(Movie)
     tag_name = models.CharField(max_length=30)
 
     def __str__(self):
