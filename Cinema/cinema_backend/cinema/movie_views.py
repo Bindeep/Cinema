@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, View, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, View, DeleteView
 from .models import Movie, MovieRating
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
@@ -43,25 +43,30 @@ class MovieDetailView(View):
 
     def get(self, request, slug):
         movie_object = Movie.objects.get(slug=slug)
-        user_object = User.objects.get(username=self.request.user.username)
-        rated_movie = user_object.rateduser.all()
-        movie_filter = rated_movie.filter(movie=movie_object).exists()
-        # get to return oject not queryset
+        if request.user.is_anonymous:
+            return render(request, 'cinema/detail.html', {'Movie': movie_object})
 
-        if movie_filter:
-            rating = rated_movie.filter(movie=movie_object).get().rating
-            context = {
-                'Movie': movie_object,
-                'rating': rating
-            }
-            return render(request, self.template_name, context)
         else:
-            context = {
+            user_object = User.objects.get(username=self.request.user.username)
+            rated_movie = user_object.rateduser.all()
+            movie_filter = rated_movie.filter(movie=movie_object).exists()
+            # get to return oject not queryset
 
-                'Movie': movie_object,
-            }
+            if movie_filter:
+                rating = rated_movie.filter(movie=movie_object).get().rating
+                context = {
 
-            return render(request, self.template_name, context)
+                    'Movie': movie_object,
+                    'rating': rating
+                }
+                return render(request, self.template_name, context)
+            else:
+                context = {
+
+                    'Movie': movie_object
+                }
+
+                return render(request, self.template_name, context)
 
 
 class MovieCreateView(CreateView):
@@ -110,18 +115,6 @@ class MovieDeleteView(DeleteView):
 
 
 def rating_create(request):
-    # def rating_create(request, slug, user, movie, rating):
-    # movie_object = Movie.objects.get(slug=slug)
-    # user_object = User.objects.get(username = user)
-    # rating_object = MovieRating.objects.create(movie=movie_object, user=user_object, rating=rating)
-    # rating_object.save()
-
-# context = {
-#   'Movie' : movie_object,
-#   'rated_by_user' : ''
-
-# }
-# return render(request, 'cinema/detail.html', context)
 
     if request.method == "POST":
         slug = request.POST['slug']
