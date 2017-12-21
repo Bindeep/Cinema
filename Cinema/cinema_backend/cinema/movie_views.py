@@ -9,26 +9,6 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 
 
-# class MovieListView(ListView):
-#     today = datetime.date.today()
-#     ten_days_ago = today - datetime.timedelta(days=10)
-#     model = Movie
-#     template_name = 'cinema/home.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super(MovieListView, self).get_context_data(**kwargs)
-#         up_coming_movies = Movie.objects.filter(release_date__gt=self.today)
-#         now_showing = Movie.objects.filter(release_date__range=(self.ten_days_ago, self.today))
-#         context['up_coming_movies'] = up_coming_movies
-#         context['now_showing_movies'] = now_showing
-#         return context
-
-# class MovieListView(ListView):
-#     model = Movie
-#     template_name = 'cinema/home.html'
-#     paginate_by = 2
-#     context_object_name = 'Movies'
-
 class MovieListView(View):
     today = datetime.date.today()
     ten_days_ago = today - datetime.timedelta(days=10)
@@ -37,10 +17,10 @@ class MovieListView(View):
     def get(self, request):
         up_coming_movies = Movie.objects.filter(release_date__gt=self.today)
         now_showing = Movie.objects.filter(release_date__range=(self.ten_days_ago, self.today))
-        paginator = Paginator(up_coming_movies, 2)
+        paginator = Paginator(up_coming_movies, 3)
         page = request.GET.get('page')
         up_coming_movies = paginator.get_page(page)
-        paginator = Paginator(now_showing, 2)
+        paginator = Paginator(now_showing, 3)
         page = request.GET.get('page')
         now_showing = paginator.get_page(page)
         context = {
@@ -53,19 +33,33 @@ class MovieListView(View):
 
 class MovieSearchView(ListView):
     template_name = 'cinema/home.html'
-    paginate_by = 2
+    context_object_name = 'search_movies'
 
-    def get(self, request):
-        name = request.GET.get('name')
-        page = request.GET.get('page')
-        movies = Movie.objects.all().filter(
-            Q(name__icontains=name) |
-            Q(genre__name__icontains=name) |
-            Q(tag__tag_name__icontains=name)
-        )
-        paginator = Paginator(movies, 2)
-        movies = paginator.get_page(page)
-        return render(request, self.template_name, {'search_movies': movies})
+    def get_queryset(self):
+        queryset_list = Movie.objects.all()
+        query = self.request.GET.get("name")
+        if query:
+            queryset_list = Movie.objects.all().filter(
+                Q(name__icontains=query) |
+                Q(genre__name__icontains=query) |
+                Q(tag__tag_name__icontains=query)
+            ).distinct()  # distinct prevents items form duplication
+
+        paginator = Paginator(queryset_list, 3)
+        page = self.request.GET.get('page')
+        queryset_list = paginator.get_page(page)
+
+        '''
+        get_page handels below statements automatically it is new in django2.0
+
+        '''
+        # try:
+        #     queryset_list = paginator.page(page)
+        # except PageNotAnInteger:
+        #     queryset_list = paginator.page(1)
+        # except EmptyPage:
+        #     queryset_list = paginator.page(paginator.num_pages)
+        return queryset_list
 
 
 class MovieDetailView(View):

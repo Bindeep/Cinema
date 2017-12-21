@@ -37,25 +37,31 @@ Home
 		{% endfor %}
 
 	</div>
-		<h1 class="text-center">
-			<div class="pagination">
-				<span class="step-links">
-					{% if search_movies.has_previous %}
-					<a href="?page=1">&laquo; first</a>
-					<a href="?page={{ search_movies.previous_page_number }}">previous</a>
-					{% endif %}
 
-					<span class="current">
-						Page {{ search_movies.number }} of {{ search_movies.paginator.num_pages }}.
-					</span>
+<h2 class="text-center">
+	{% if search_movies.has_other_pages %}
+  <ul class="pagination">
+    {% if search_movies.has_previous %}
+      <li><a href="?page={{ search_movies.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in search_movies.paginator.page_range %}
+      {% if search_movies.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if search_movies.has_next %}
+      <li><a href="?page={{ search_movies.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+</h2>
 
-					{% if search_movies.has_next %}
-					<a href="?page={{ search_movies.next_page_number }}">next</a>
-					<a href="?page={{ search_movies.paginator.num_pages }}">last &raquo;</a>
-					{% endif %}
-				</span>
-			</div>
-		</h1>
 
 </div>
 {% else %}
@@ -119,25 +125,30 @@ Home
 
 		{% endfor %}
 	</div>
-	<h1 class="text-center">
-			<div class="pagination">
-    <span class="step-links">
-        {% if up_coming_movies.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ up_coming_movies.previous_page_number }}">previous</a>
-        {% endif %}
 
-        <span class="current">
-            Page {{ up_coming_movies.number }} of {{ up_coming_movies.paginator.num_pages }}.
-        </span>
-
-        {% if up_coming_movies.has_next %}
-            <a href="?page={{ up_coming_movies.next_page_number }}">next</a>
-            <a href="?page={{ up_coming_movies.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-	</div>
-	</h1>
+<h2 class="text-center">
+	{% if up_coming_movies.has_other_pages %}
+  <ul class="pagination">
+    {% if up_coming_movies.has_previous %}
+      <li><a href="?page={{ up_coming_movies.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in up_coming_movies.paginator.page_range %}
+      {% if up_coming_movies.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if up_coming_movies.has_next %}
+      <li><a href="?page={{ up_coming_movies.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+</h2>
 
 </div>
 
