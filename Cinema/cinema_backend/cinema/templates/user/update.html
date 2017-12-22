@@ -10,9 +10,10 @@ User Update
 	<form action="" method="post" class="form-group ">{% csrf_token %}
 		{{ user_form.as_p }}
 		{{ profile_form.as_p }}
-		<button type="submit">Update</button>
+		<button type="submit" class="btn btn-success">Update</button>
 
 	</form>
+
 	<a href="{% url 'movie:change_password' %}" class="btn btn-info ">Change Password</a>
 
 </div>

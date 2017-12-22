@@ -7,15 +7,17 @@ User Detail
 {% block body %}
 
 <div class="container">
-	{{ user }}
-	{{ user }}
-	{{ user.email }}
-	{{ user.username }}
-	{{ user.userprofile.gender }}
+	<h1>{{ message }}</h1>
+	<br>
+	{{ user }} <br>
+	{{ user }} <br>
+	{{ user.email }} <br>
+	{{ user.username }} <br>
+	{{ user.userprofile.gender }} <br>
 
-	
+	<br>
 
-
+	<a href="{% url 'movie:user_update' %}" class="btn btn-info ">Update Profile</a>
 		
 	</form> 
 </div>

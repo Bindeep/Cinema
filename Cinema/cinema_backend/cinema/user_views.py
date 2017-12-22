@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import update_session_auth_hash
 
 
 class UserRegisterView(View):
@@ -25,46 +27,50 @@ class UserRegisterView(View):
 
         return render(request, self.template_name, context)
 
+    @method_decorator(csrf_protect)
+    def post(self, request):
+        user_created_form = self.user_form_class(request.POST)
+        profile_form = self.profile_form_class(request.POST)
 
-@method_decorator(csrf_protect)
-def post(self, request):
-    user_created_form = self.user_form_class(request.POST)
-    profile_form = self.profile_form_class(request.POST)
+        if user_created_form.is_valid() and profile_form.is_valid():
+            username = user_created_form.cleaned_data['username']
+            firstname = user_created_form.cleaned_data['first_name']
+            lastname = user_created_form.cleaned_data['last_name']
+            email = user_created_form.cleaned_data['email']
+            password = user_created_form.cleaned_data['password1']
+            gender = profile_form.cleaned_data['gender']
+            phone_number = profile_form.cleaned_data['phone_number']
+            location = profile_form.cleaned_data['location']
 
-    if user_created_form.is_valid() and profile_form.is_valid():
-        username = user_created_form.cleaned_data['username']
-        firstname = user_created_form.cleaned_data['first_name']
-        lastname = user_created_form.cleaned_data['last_name']
-        email = user_created_form.cleaned_data['email']
-        password = user_created_form.cleaned_data['password1']
-        gender = profile_form.cleaned_data['gender']
-        phone_number = profile_form.cleaned_data['phone_number']
-        location = profile_form.cleaned_data['location']
+            try:
+                with transaction.atomic():
+                    created_user = User.objects.create_user(
+                        username=username,
+                        password=password,
+                        first_name=firstname,
+                        last_name=lastname,
+                        email=email
+                    )
+                    profile = UserProfile.objects.create(
+                        owner=created_user,
+                        gender=gender,
+                        phone_number=phone_number,
+                        location=location
+                    )
+                    created_user.save()
+                    profile.save()
+                    created_user = authenticate(request, username=username, password=password)
+                    if created_user is not None:
+                        login(request, created_user)
+                        return redirect('movie:movie-list')
+                    else:
+                        pass
+            except:
+                return render(request, self.template_name, {
 
-        try:
-            with transaction.atomic():
-                created_user = User.objects.create_user(
-                    username=username,
-                    password=password,
-                    first_name=firstname,
-                    last_name=lastname,
-                    email=email
-                )
-                profile = UserProfile.objects.create(
-                    owner=created_user,
-                    gender=gender,
-                    phone_number=phone_number,
-                    location=location
-                )
-                created_user.save()
-                profile.save()
-                return redirect('movie:movie-list')
-        except:
-            return render(request, self.template_name, {
-
-                'user_form': user_created_form,
-                'profile_form': profile_form,
-                'error': 'retry'})
+                    'user_form': user_created_form,
+                    'profile_form': profile_form,
+                    'error': 'retry'})
 
 
 class UserUpdateView(View):
@@ -148,6 +154,7 @@ class PasswordChangeView(View):
                 created_user = User.objects.get(username=username)
                 created_user.set_password(password)
                 created_user.save()
+                update_session_auth_hash(request, created_user)
                 return render(
                     request,
                     'user/detail.html',
