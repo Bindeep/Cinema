@@ -20,7 +20,7 @@
 		
 		<span class="col-xs-5">
 
-			<div class="container" height="auto">
+			<div class="container" height="auto" id="ratingList">
 				<div class="row">
 					<div class="col-xs-6 col-sm-4">
 						<div class="well well-sm">
@@ -142,6 +142,7 @@
 		</div>
 		<br>
 		<br>
+
 <div class="container">
 	<br>
 	<br>
@@ -153,6 +154,7 @@
 	
 			<span class="col-md-6">
 				<br>
+					<strong><h1 class="pull-center">{{ error }}</strong></h1>
 					<strong class="pull-center"><h1 id="before_click">Click TO Rate !!!</h1>
 						<h1 id="after_click">You Have Rated This Movie</h1>
 						<form method="Post">{% csrf_token %}
@@ -284,7 +286,7 @@ h1 { font-size: 1.5em; margin: 10px; }
 
 	$(document).on("ready", function(){
 
-		if($("#userRating").val() !== ""){
+		if($("#userRating").val() != ""){
 			rating = $("#userRating").val();
 			rate = Number(rating);
 			for(i=1; i<=rate; i++){
@@ -320,19 +322,31 @@ h1 { font-size: 1.5em; margin: 10px; }
 			},
 
 			success :function(data){
-
-				
-				$("#before_click").hide();
-				$("#after_click").show();
-				var rate = Number(data.rating)
+				$("#ratingList").load(document.URL + ' #ratingList', function() {
+					var rate = Number(data.rating)
+					for (var i = 1; i <= rate; i++) {
+						var star = "#star";
+						var star_rate = String(i);
+						var star_id = star.concat(star_rate);					
+						$(star_id).prop("checked", true)
+						
+					};
+					$(":radio").prop("disabled", true);
+					$("#after_click").show();
+					$("#before_click").hide();
+				});
+/*				var rate = Number(data.rating)
 				for (var i = 1; i <= rate; i++) {
 					var star = "#star";
 					var star_rate = String(i);
 					var star_id = star.concat(star_rate);					
 					$(star_id).prop("checked", true)
 					
-				}
-				$(":radio").prop("disabled", true)
+				};
+				$(":radio").prop("disabled", true);
+				$("#after_click").show();
+				$("#before_click").hide();*/
+
 
 				/*$("#star1").prop("checked", true);*/
 
