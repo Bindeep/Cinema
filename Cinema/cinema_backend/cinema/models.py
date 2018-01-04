@@ -35,7 +35,8 @@ class Movie(models.Model):
 
     @property
     def get_user_rating(self):
-        movie_object = Movie.objects.get(slug=self.slug)
+        # movie_object = Movie.objects.get(slug=self.slug)
+        movie_object = Movie.objects.prefetch_related('ratedmovie').get(slug=self.slug)
         user_ratings_dict = movie_object.ratedmovie.all().values('user__username', 'rating')
         user_ratings_list = []
         user_ratings = ''
@@ -46,7 +47,8 @@ class Movie(models.Model):
         return user_ratings_list
 
     def star_percentage(self, rating):
-        movie_object = Movie.objects.get(slug=self.slug)
+        # movie_object = Movie.objects.get(slug=self.slug)
+        movie_object = Movie.objects.prefetch_related('ratedmovie').get(slug=self.slug)
         rated_movie_list = movie_object.ratedmovie.all()
         total_voters = rated_movie_list.count()
         if total_voters != 0:
@@ -59,7 +61,8 @@ class Movie(models.Model):
 
     @property
     def total_voters(self):
-        movie_object = Movie.objects.get(slug=self.slug)
+        # movie_object = Movie.objects.get(slug=self.slug)
+        movie_object = Movie.objects.prefetch_related('ratedmovie').get(slug=self.slug)
         rated_movie_list = movie_object.ratedmovie.all()
         total_voters = rated_movie_list.count()
         return total_voters
@@ -86,7 +89,8 @@ class Movie(models.Model):
 
     @property
     def get_rating(self):
-        movie_object = Movie.objects.get(slug=self.slug)
+        # movie_object = Movie.objects.get(slug=self.slug)
+        movie_object = Movie.objects.prefetch_related('ratedmovie').get(slug=self.slug)
         rated_movie_list = movie_object.ratedmovie.all()
         total_voters = rated_movie_list.count()
         total_movie_rating = 0
@@ -127,61 +131,3 @@ class MovieRating(models.Model):
 
     def __str__(self):
         return self.movie.name + self.user.username
-
-    # @property
-    # def get_two_star_percentage(self)
-    #   two_star_count = MovieRating.objects.filter(rating = 2).count()
-    #   total_voters = MovieRating.objects.all().count()
-    #   two_star_percentage = (total_voters/two_star_count)*100
-    #   return two_star_percentage
-
-    # @property
-    # def get_three_star_percentage(self)
-    #   three_star_count = MovieRating.objects.filter(rating = 3).count()
-    #   total_voters = MovieRating.objects.all().count()
-    #   three_star_percentage = (total_voters/three_star_count)*100
-    #   return three_star_percentage
-
-    # @property
-    # def get_four_star_percentage(self)
-    #   one_star_count = MovieRating.objects.filter(rating = 4).count()
-    #   total_voters = MovieRating.objects.all().count()
-    #   one_star_percentage = (total_voters/one_star_count)*100
-    #   return one_star_percentage
-
-    # @property
-    # def five_star_percentage(self)
-    #   five_star_count = MovieRating.objects.filter(rating = 5).count()
-    #   total_voters = MovieRating.objects.all().count()
-    #   five_star_percentage = (total_voters/five_star_count)*100
-    #   return five_star_percentage
-
-    # def star_percentage(self, star_count, rating, star_percentage):
-    #   total_voters = MovieRating.objects.all().count()
-    #   if total_voters != 0:
-    #       star_count = MovieRating.objects.filter(rating = rating).count()
-    #       star_percentage = (star_count/total_voters)*100
-    #       return star_percentage
-    #   else:
-    #       star_percentage = 0
-
-    # @property
-    # def get_one_star_percentage(self):
-    #   self.star_percentage(one_star_count, 1, one_star_percentage)
-
-    # @property
-    # def get_two_star_percentage(self):
-    #   self.star_percentage(two_star_count, 2, two_star_percentage)
-
-    # @property
-    # def get_three_star_percentage(self):
-    #   self.star_percentage(three_star_count, 3, three_star_percentage)
-
-
-    # @property
-    # def four_star_percentage(self):
-    #   self.star_percentage(four_star_count, 4, four_star_percentage)
-
-    # @property
-    # def five_star_percentage(self):
-    #   self.star_percentage(five_star_count, 5, five_star_percentage)

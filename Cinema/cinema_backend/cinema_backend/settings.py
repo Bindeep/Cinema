@@ -152,3 +152,6 @@ AUTH_PROFILE_MODULE = 'cinema.UserProfile'
 
 
 INTERNAL_IPS = '127.0.0.1'
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025

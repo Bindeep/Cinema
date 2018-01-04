@@ -13,9 +13,9 @@ class TagCreateView(CreateView):
         context = super(TagCreateView, self).get_context_data(**kwargs)
         context = {
 
-            'Create' : 'Create',
-            'Topic' : 'Create Movie Tags Here !!!',
-            'form' : self.get_form()
+            'Create': 'Create',
+            'Topic': 'Create Movie Tags Here !!!',
+            'form': self.get_form()
         }
         return context
 

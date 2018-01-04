@@ -17,12 +17,12 @@ class MovieListView(View):
     def get(self, request):
         up_coming_movies = Movie.objects.filter(release_date__gt=self.today)
         now_showing = Movie.objects.filter(release_date__range=(self.ten_days_ago, self.today))
-        paginator = Paginator(up_coming_movies, 3)
+        paginator_up_coming = Paginator(up_coming_movies, 3)
         page = request.GET.get('page')
-        up_coming_movies = paginator.get_page(page)
-        paginator = Paginator(now_showing, 3)
+        up_coming_movies = paginator_up_coming.get_page(page)
+        paginator_now_showing = Paginator(now_showing, 3)
         page = request.GET.get('page')
-        now_showing = paginator.get_page(page)
+        now_showing = paginator_now_showing.get_page(page)
         context = {
 
             'up_coming_movies': up_coming_movies,

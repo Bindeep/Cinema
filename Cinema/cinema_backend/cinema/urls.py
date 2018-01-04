@@ -29,10 +29,18 @@ from .tag_views import (
     TagUpdateView
 )
 
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import (
+    LoginView,
+    LogoutView,
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView
+)
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import user_passes_test
+from django.urls import reverse_lazy
 
 admin_or_none = user_passes_test(lambda u: u.is_anonymous or u.is_staff)
 
@@ -67,11 +75,25 @@ urlpatterns = [
     path('user/update/', login_required(UserUpdateView.as_view()), name='user_update'),
     path('user/profile/change_password/', login_required(
         PasswordChangeView.as_view()), name='change_password'),
+
     path('user/login/', admin_or_none(
         LoginView.as_view(template_name='user/login.html')), name='login'),
     path('user/logout/', login_required(LogoutView.as_view(next_page='/movie/')), name='logout'),
 
-    # path('rating/<slug:slug>/<str:user>/<str:movie>/<int:rating>/', rating_create,  name='movie_rating')
+
+
+    path('user/password_reset/', login_required(
+        PasswordResetView.as_view(success_url=reverse_lazy('movie:password_reset_done'))),
+        name='password_reset'),
+    path('user/password_reset/done', login_required(
+        PasswordResetDoneView.as_view()), name='password_reset_done'),
+    path('user/password/reset/<uidb64>/<token>', login_required(
+        PasswordResetConfirmView.as_view(success_url=reverse_lazy('movie:password_reset_complete'))),
+        name='password_reset_confirm'),
+    path('user/password/reset/done', login_required(
+        PasswordResetCompleteView.as_view()), name='password_reset_complete'),
+
+
 
     path('rating/create/', rating_create, name='movie_rating')
 
