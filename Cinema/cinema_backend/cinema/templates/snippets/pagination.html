@@ -1,0 +1,39 @@
+{% if is_paginated %}
+  <nav>
+    <ul class="pagination">
+      {% if up_coming_movies.has_previous %}
+        <li>
+          <a href="?page={{ up_coming_movies.previous_page_number }}">
+            <span>Previous</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="disabled">
+          <a href="#">
+            <span>Previous</span>
+          </a>
+        </li>
+      {% endif %}
+
+      {% for page in paginator.page_range %}
+        <li {% if page == up_coming_movies.number %}class="active"{% endif %}>
+          <a href="?page={{ page }}">{{ page }}</a>
+        </li>
+      {% endfor %}
+
+      {% if up_coming_movies.has_next %}
+        <li>
+          <a href="?page={{ up_coming_movies.next_page_number }}">
+            <span>Next</span>
+          </a>
+        </li>
+      {% else %}
+        <li {% if not up_coming_movies.has_next %}class="disabled"{% endif %}>
+          <a href="#">
+            <span>Next</span>
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}

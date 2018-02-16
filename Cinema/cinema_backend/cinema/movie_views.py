@@ -36,7 +36,7 @@ class MovieSearchView(ListView):
     context_object_name = 'search_movies'
 
     def get_queryset(self):
-        queryset_list = Movie.objects.all()
+        # queryset_list = Movie.objects.all()
         query = self.request.GET.get("name")
         if query:
             queryset_list = Movie.objects.all().filter(
@@ -76,6 +76,8 @@ class MovieDetailView(View):
 
         else:
             user_object = User.objects.get(username=self.request.user.username)
+            # user_object = User.objects.prefetch_related('rateduser').get(
+            #     username=self.request.user.username)
             rated_movie = user_object.rateduser.all()
             movie_filter = rated_movie.filter(movie=movie_object).exists()
             # get to return oject not queryset

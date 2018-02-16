@@ -1,8 +1,11 @@
 from django.views.generic import ListView, CreateView, DeleteView
 from .models import Genre
 from django.urls import reverse_lazy
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class GenreCreateView(CreateView):
     model = Genre
     template_name = 'genre/create.html'
@@ -19,6 +22,7 @@ class GenreCreateView(CreateView):
         return context
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class GenreListView(ListView):
     model = Genre
     template_name = 'genre/create.html'
@@ -30,6 +34,7 @@ class GenreListView(ListView):
         return context
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class GenreDeleteView(DeleteView):
     model = Genre
     success_url = reverse_lazy('movie:genre_list')

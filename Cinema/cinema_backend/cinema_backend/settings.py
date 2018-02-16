@@ -54,12 +54,9 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-
-]
-
-MIDDLEWARE_CLASSES = [
     'material.frontend.middleware.SmoothNavigationMiddleware'
+
+
 ]
 
 ROOT_URLCONF = 'cinema_backend.urls'

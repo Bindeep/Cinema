@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from slugify import unique_slugify
 from django.contrib.auth.models import User
+from django.db.models.signals import pre_save
 
 
 class Genre(models.Model):
@@ -26,9 +27,9 @@ class Movie(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self):
-        self.slug = unique_slugify(self.name)
-        super().save()
+    # def save(self):
+    #     self.slug = unique_slugify(self.name)
+    #     super().save()
 
     def get_absolute_url(self):
         return reverse('movie:movie-detail', kwargs={'slug': self.slug})
@@ -36,8 +37,9 @@ class Movie(models.Model):
     @property
     def get_user_rating(self):
         # movie_object = Movie.objects.get(slug=self.slug)
-        movie_object = Movie.objects.prefetch_related('ratedmovie').get(slug=self.slug)
-        user_ratings_dict = movie_object.ratedmovie.all().values('user__username', 'rating')
+        movie_object_list = Movie.objects.prefetch_related('ratedmovie')
+        movie_object = movie_object_list.filter(slug=self.slug).get()
+        user_ratings_dict = movie_object.ratedmovie.values('user__username', 'rating')
         user_ratings_list = []
         user_ratings = ''
         for item in user_ratings_dict:
@@ -48,7 +50,8 @@ class Movie(models.Model):
 
     def star_percentage(self, rating):
         # movie_object = Movie.objects.get(slug=self.slug)
-        movie_object = Movie.objects.prefetch_related('ratedmovie').get(slug=self.slug)
+        movie_object_list = Movie.objects.prefetch_related('ratedmovie')
+        movie_object = movie_object_list.filter(slug=self.slug).get()
         rated_movie_list = movie_object.ratedmovie.all()
         total_voters = rated_movie_list.count()
         if total_voters != 0:
@@ -62,10 +65,11 @@ class Movie(models.Model):
     @property
     def total_voters(self):
         # movie_object = Movie.objects.get(slug=self.slug)
-        movie_object = Movie.objects.prefetch_related('ratedmovie').get(slug=self.slug)
-        rated_movie_list = movie_object.ratedmovie.all()
-        total_voters = rated_movie_list.count()
-        return total_voters
+        # movie_object = Movie.objects.prefetch_related('ratedmovie').get(slug=self.slug)
+        # rated_movie_list = movie_object.ratedmovie.all()
+        # total_voters = rated_movie_list.count()
+        # return total_voters
+        return Movie.objects.prefetch_related('ratedmovie').get(slug=self.slug).ratedmovie.count()
 
     @property
     def one_star_percentage(self):
@@ -89,8 +93,8 @@ class Movie(models.Model):
 
     @property
     def get_rating(self):
-        # movie_object = Movie.objects.get(slug=self.slug)
-        movie_object = Movie.objects.prefetch_related('ratedmovie').get(slug=self.slug)
+        movie_object_list = Movie.objects.prefetch_related('ratedmovie')
+        movie_object = movie_object_list.filter(slug=self.slug).get()
         rated_movie_list = movie_object.ratedmovie.all()
         total_voters = rated_movie_list.count()
         total_movie_rating = 0
@@ -102,6 +106,13 @@ class Movie(models.Model):
         else:
             movie_rating = 0
             return movie_rating
+
+
+def save_slug(sender, instance, *args, **kwargs):
+    instance.slug = unique_slugify(instance.name)
+
+
+pre_save.connect(save_slug, sender=Movie)
 
 
 class Tag(models.Model):

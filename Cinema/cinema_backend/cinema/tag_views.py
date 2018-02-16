@@ -1,8 +1,11 @@
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from cinema.models import Tag
 from django.urls import reverse_lazy
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class TagCreateView(CreateView):
     model = Tag
     template_name = 'tag/create.html'
@@ -20,6 +23,7 @@ class TagCreateView(CreateView):
         return context
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class TagListView(ListView):
     model = Tag
     template_name = 'tag/create.html'
@@ -31,6 +35,7 @@ class TagListView(ListView):
         return context
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class TagDeleteView(DeleteView):
     model = Tag
     success_url = reverse_lazy('movie:tag_list')
@@ -39,6 +44,7 @@ class TagDeleteView(DeleteView):
         return self.post(*args, **kwargs)
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class TagUpdateView(UpdateView):
     model = Tag
     template_name = 'tag/create.html'
