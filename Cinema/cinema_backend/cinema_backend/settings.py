@@ -78,6 +78,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'cinema_backend.wsgi.application'
 
 

@@ -7,6 +7,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
 
 
 class MovieListView(View):
@@ -44,11 +46,12 @@ class MovieSearchView(ListView):
                 Q(genre__name__icontains=query) |
                 Q(tag__tag_name__icontains=query)
             ).distinct()  # distinct prevents items form duplication
-
+        else:
+            queryset_list = Movie.objects.all()
         paginator = Paginator(queryset_list, 3)
         page = self.request.GET.get('page')
         queryset_list = paginator.get_page(page)
-
+        return queryset_list
         '''
         get_page handels below statements automatically it is new in django2.0
 
@@ -59,7 +62,6 @@ class MovieSearchView(ListView):
         #     queryset_list = paginator.page(1)
         # except EmptyPage:
         #     queryset_list = paginator.page(paginator.num_pages)
-        return queryset_list
 
 
 class MovieDetailView(View):
@@ -99,6 +101,7 @@ class MovieDetailView(View):
                 return render(request, self.template_name, context)
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class MovieCreateView(CreateView):
     model = Movie
     template_name = 'cinema/create.html'
@@ -117,6 +120,7 @@ class MovieCreateView(CreateView):
         return context
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class MovieUpdateView(UpdateView):
     model = Movie
     template_name = 'cinema/create.html'
@@ -136,6 +140,7 @@ class MovieUpdateView(UpdateView):
         return context
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class MovieDeleteView(DeleteView):
     model = Movie
     success_url = reverse_lazy('movie:movie-list')
